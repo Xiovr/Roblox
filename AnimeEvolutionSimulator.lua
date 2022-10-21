@@ -25,12 +25,17 @@ end
 -- Functions
 
 local Hitfunc;
+local Rankfunc
 
 for i,v in pairs(getgc()) do
     if type(v) == "function" and getinfo(v).source then
         if getinfo(v).source == "=Players."..plr.Name..".PlayerGui.UI.Client.Modules.PunchingSettings" then
             if getinfo(v).currentline == 30 then
                 Hitfunc = v
+            end
+        elseif getinfo(v).source == "=Players."..plr.Name..".PlayerGui.UI.Client.Modules.RankSettings" then
+            if getinfo(v).currentline == 29 then
+                Rankfunc = v
             end
         end
     end
@@ -102,7 +107,14 @@ local punya = credits:Section({Text = "Owner"})
 
 farm:Toggle({
     Text = "Auto Click",
-    Flag = "hit"
+    Flag = "hit",
+    Callback = function(bool)
+        if bool then
+            setconstant(Hitfunc, 13, 0)
+        else
+            setconstant(Hitfunc, 13, 0.1)
+        end
+    end
 })
 
 farm:Dropdown({
@@ -331,7 +343,7 @@ end)
 spawn(function()
     while task.wait(0.5) do
         if Flags["rankup"] then
-            reps.Remotes.Client:FireServer({"RankUp"})
+            Rankfunc()
         end
     end           
 end)
